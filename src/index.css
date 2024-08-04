@@ -1,0 +1,21 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+.alert-container {
+  position: fixed;
+  top: 4rem;
+  left: 0;
+  right: 0;
+}
+
+.alert-inner {
+  display: inline-block;
+  padding: 8px 16px;
+  z-index: 1;
+  background-color: #ffffff;
+  box-shadow: 1px 2px 10px -3px rgb(0 0 0 / 70%);
+  -webkit-box-shadow: 1px 2px 10px -3px rgb(0 0 0 / 70%);
+  -moz-box-shadow: 1px 2px 10px -3px rgb(0 0 0 / 70%);
+}
