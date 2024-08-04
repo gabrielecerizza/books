@@ -1,0 +1,13 @@
+bertopic==0.16.2
+Flask==3.0.3
+Flask_Cors==4.0.0
+hdbscan==0.8.37
+lightning==2.3.3
+numpy==2.0.1
+pandas==2.2.2
+psycopg2==2.9.9
+scikit_learn==1.5.1
+sentence_transformers==3.0.1
+torch==2.3.1
+transformers==4.42.4
+umap_learn==0.5.6

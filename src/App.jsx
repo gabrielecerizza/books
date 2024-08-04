@@ -171,7 +171,16 @@ function Home({ currentUser, cart, setCart, showAlert }) {
         showSpinner ? (
           <Button size="lg" loading="true">loading</Button>
         ) : (
-          <FilterableBookTable currentUser={currentUser} books={books} setBooks={setBooks} bookFilter={bookFilter} setBookFilter={setBookFilter} loadBooks={loadBooks} cart={cart} setCart={setCart} showAlert={showAlert} />
+          <FilterableBookTable 
+            currentUser={currentUser} 
+            books={books} 
+            setBooks={setBooks} 
+            bookFilter={bookFilter} 
+            setBookFilter={setBookFilter} 
+            loadBooks={loadBooks} 
+            cart={cart} 
+            setCart={setCart} 
+            showAlert={showAlert} />
         )
       }
     </>

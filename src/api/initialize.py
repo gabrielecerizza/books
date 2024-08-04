@@ -117,7 +117,7 @@ def reset_tables():
 
 
 if __name__ == "__main__":
-    reset_tables()
+    # reset_tables()
     create_tables()
     book_rows, ids = get_book_rows(num=100)
     book_reviews = get_book_reviews(ids)
