@@ -28,16 +28,23 @@ export default function EditBook({ showAlert }) {
     const handleSubmit = (event) => {
         event.preventDefault();
         console.log("Form Values:", formValues);
-        formValues.id = location.state.id
-        CommunicationController.editBook(formValues)
-            .then(data => {
-                console.log("EditBook:handleSubmit: number of changed rows: ", data)
-                showAlert("Book successfully edited", "alert-success")
-            })
-            .catch(err => {
-                console.log(err.message)
-                showAlert("Could not edit book", "alert-error")
-            })
+        if (!formValues.title || 
+            !formValues.author ||
+            !formValues.year ||
+            !formValues.price) {
+                showAlert("Some values are missing", "alert-error")
+        } else {
+            formValues.id = location.state.id
+            CommunicationController.editBook(formValues)
+                .then(data => {
+                    console.log("EditBook:handleSubmit: number of changed rows: ", data)
+                    showAlert("Book successfully edited", "alert-success")
+                })
+                .catch(err => {
+                    console.log(err.message)
+                    showAlert("Could not edit book", "alert-error")
+                })
+        }
     };
 
     return (

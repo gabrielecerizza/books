@@ -6,11 +6,11 @@ import CommunicationController from '../../controller';
 export default function AddBook({ showAlert }) {
     
     const [formValues, setFormValues] = useState({
-        title: '',
-        author: '',
-        year: '',
-        price: '',
-        description: ''
+        title: "",
+        author: "",
+        year: "",
+        price: "",
+        description: ""
     });
     
     const handleInputChange = (event) => {
@@ -24,7 +24,14 @@ export default function AddBook({ showAlert }) {
     const handleSubmit = (event) => {
         event.preventDefault();
         console.log("Form Values:", formValues);
-        CommunicationController.addBook(formValues)
+
+        if (!formValues.title || 
+            !formValues.author ||
+            !formValues.year ||
+            !formValues.price) {
+                showAlert("Some values are missing", "alert-error")
+        } else {
+            CommunicationController.addBook(formValues)
             .then(data => {
                 console.log("AddBook:handleSubmit: new book id: ", data)
                 showAlert("Book successfully added", "alert-success")
@@ -34,13 +41,14 @@ export default function AddBook({ showAlert }) {
                 showAlert("Could not add book", "alert-error")
             })
 
-        setFormValues({
-            title: '',
-            author: '',
-            year: '',
-            price: '',
-            description: ''
-        });
+            setFormValues({
+                title: "",
+                author: "",
+                year: "",
+                price: "",
+                description: ""
+            });
+        }
     };
 
     return (

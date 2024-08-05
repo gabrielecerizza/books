@@ -176,7 +176,7 @@ class BooksDBDataset(Dataset):
 
         c = 0
         for ru in self.reg_users["id"]:
-            print(ru)
+            # print(ru)
             if not ru in self.users:
                 self.users = np.append(self.users, str(ru))
                 c += 1
@@ -225,7 +225,7 @@ class PivotBooksDBDataset(Dataset):
         self.users = self.ratings["user_id"].unique()
         c = 0
         for ru in self.reg_users["id"]:
-            print(ru)
+            # print(ru)
             if not ru in self.users:
                 self.users = np.append(self.users, str(ru))
                 c += 1
@@ -528,7 +528,22 @@ class MultiVAE(L.LightningModule):
         return loss
 
 
-def get_recommended_nnmf(user_id, max_epochs=20, k=5):
+def scores_to_rows(k, dataset, read_idx, scores):
+    sorted_scores, indices = torch.sort(scores, descending=True)
+    recommendable_idx = [i for i in indices if i not in read_idx]
+    print("recommendable_idx", recommendable_idx)
+    recommended_idx = recommendable_idx[:min(k, len(recommendable_idx))]
+    print("recommended_idx", recommended_idx)
+    recommended_ids = [dataset.idx2bookid[int(i)] for i in recommended_idx]
+    print("recommended_ids", recommended_ids)
+
+    rows = []
+    for row in dataset.books_df[dataset.books_df["id"].isin(recommended_ids)].iterrows():
+        rows.append(dict(row[1]))
+    return rows
+
+
+def get_recommended_nnmf(user_id, max_epochs=15, k=5):
     dataset = BooksDBDataset()
     n_users, n_items = dataset.get_nums()
     train_dataloader = DataLoader(dataset, 128, shuffle=True)
@@ -549,14 +564,7 @@ def get_recommended_nnmf(user_id, max_epochs=20, k=5):
     item_embeddings = mf.item_factors.weight
 
     scores = torch.matmul(user_embedding, item_embeddings.T)
-    sorted_scores, indices = torch.sort(scores, descending=True)
-    recommendable_ids = [i for i in indices if i not in read_idx]
-    recommended_ids = recommendable_ids[:min(k, len(recommendable_ids))]
-
-    rows = []
-    for row in dataset.books_df.iloc[recommended_ids].iterrows():
-        rows.append(dict(row[1]))
-    return rows
+    return scores_to_rows(k, dataset, read_idx, scores)
 
 
 def get_recommended_nmf(user_id, k=5):
@@ -564,7 +572,7 @@ def get_recommended_nmf(user_id, k=5):
 
     dataset = PivotBooksDBDataset()
     nmf = NMF(n_components=20, random_state=42)
-    print("dataset userid2idx: ", dataset.userid2idx)
+    # print("dataset userid2idx: ", dataset.userid2idx)
     print("dataset.userid2idx[user_id]: ", dataset.userid2idx[user_id])
 
     W = nmf.fit_transform(dataset.X)
@@ -572,22 +580,17 @@ def get_recommended_nmf(user_id, k=5):
     
     read_ids = dataset.ratings_df[dataset.ratings_df["user_id"] == user_id]["book_id"].to_numpy()
     read_idx = [dataset.bookid2idx[id] for id in read_ids]
-    # title_dict = dataset.get_title_dict()
+    print("read_idx", read_idx)
+    title_dict = dataset.get_title_dict()
+    print("read titles:", [title_dict[dataset.idx2bookid[i]] for i in read_idx])
 
     user_embedding = W[dataset.userid2idx[user_id]]
 
     scores = torch.matmul(torch.Tensor(user_embedding), torch.Tensor(H))
-    sorted_scores, indices = torch.sort(scores, descending=True)
-    recommendable_ids = [i for i in indices if i not in read_idx]
-    recommended_ids = recommendable_ids[:min(k, len(recommendable_ids))]
-
-    rows = []
-    for row in dataset.books_df.iloc[recommended_ids].iterrows():
-        rows.append(dict(row[1]))
-    return rows
+    return scores_to_rows(k, dataset, read_idx, scores)
 
 
-def get_recommended_multivae(user_id, max_epochs=30, k=5):
+def get_recommended_multivae(user_id, max_epochs=15, k=5):
     dataset = PivotBooksDBDataset()
     train_dataloader = DataLoader(dataset, 128, shuffle=True)
     n_users, n_items = dataset.get_nums()
@@ -605,11 +608,4 @@ def get_recommended_multivae(user_id, max_epochs=30, k=5):
     user_row = dataset.X[dataset.userid2idx[user_id]]
     scores = model(user_row)[0]
 
-    sorted_scores, indices = torch.sort(scores, descending=True)
-    recommendable_ids = [i for i in indices if i not in read_idx]
-    recommended_ids = recommendable_ids[:min(k, len(recommendable_ids))]
-
-    rows = []
-    for row in dataset.books_df.iloc[recommended_ids].iterrows():
-        rows.append(dict(row[1]))
-    return rows
+    return scores_to_rows(k, dataset, read_idx, scores)

@@ -18,10 +18,46 @@ Install the packages listed in `requirements.txt`. Then start the server with `f
 
 Place your `config.ini` file for PostgreSQL in `src/api`.
 
-You can run `python initialize.py` in `src/api` to create tables and populate them with data from the dataset.
+You can run `python initialize.py` in `src/api` to create tables and populate them with data from the dataset. This operation can take a couple of minutes. Make sure to properly change the dataset path in `dataset.py`.
 
 ## Images
 
+### Home Page
+
+![image](img/main.png)
+
+### Add Book Page
+
+![image](img/add_book.png)
+
+### Edit Book Page
+
+![image](img/edit_book.png)
+
+### Sign Up Page
+
+![image](img/sign_up.png)
+
+### Sign In Page
+
+![image](img/sign_in.png)
+
+### Account Page
+
+![image](img/account.png)
+
+### Cart Page
+
+![image](img/cart.png)
+
 ### Recommendations Page
 
-![image](img/test.png)
+![image](img/recommendations.png)
+
+### Book Details Page
+
+![image](img/book_details1.png)
+
+![image](img/book_details2.png)
+
+![image](img/book_details3.png)

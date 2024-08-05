@@ -119,7 +119,12 @@ def reset_tables():
 if __name__ == "__main__":
     # reset_tables()
     create_tables()
+    print("Created tables")
     book_rows, ids = get_book_rows(num=100)
+    print("Loaded books from dataset")
     book_reviews = get_book_reviews(ids)
+    print("Loaded reviews from dataset")
     insert_books(book_rows)
+    print("Added books")
     insert_reviews(book_reviews)
+    print("Added reviews")

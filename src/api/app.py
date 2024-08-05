@@ -60,7 +60,7 @@ def add_user():
     password = sha256(user.get("password").encode(encoding="UTF-8")).hexdigest()
     res = db.add_user(username, email, password)
     print("add_user res", res)
-    return (res, 200) if res is not None else ("Record not found", 400)
+    return (res, 200) if res["user_id"] != "None" else ("Username already chosen", 400)
 
 # PUT instead of GET to avoid having the password as a URL parameter
 @app.route("/auth_user", methods=["PUT"])

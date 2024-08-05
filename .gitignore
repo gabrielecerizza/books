@@ -460,3 +460,5 @@ TSWLatexianTemp*
 /src/api/lightning_logs/
 /checkpoints/
 /lightning_logs/
+
+src/api/config.ini
